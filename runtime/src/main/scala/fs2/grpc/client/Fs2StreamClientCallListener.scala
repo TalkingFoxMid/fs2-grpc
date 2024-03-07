@@ -23,13 +23,15 @@ package fs2
 package grpc
 package client
 
-import cats.effect.SyncIO
+import cats.Monad
+import cats.effect.{Ref, SyncIO}
 import cats.implicits._
+import cats.syntax.monad._
 import cats.effect.kernel.Concurrent
 import cats.effect.std.Dispatcher
 import io.grpc.{ClientCall, Metadata, Status}
 
-private[client] class Fs2StreamClientCallListener[F[_], Response] private (
+private[client] class Fs2StreamClientCallListener[F[_]: Monad, Response] private (
     ingest: StreamIngest[F, Response],
     signalReadiness: SyncIO[Unit],
     dispatcher: Dispatcher[F]
